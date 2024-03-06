@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { TokenContent } from '@sharedTypes/DBTypes';
+import { getSession } from '@/lib/authActions';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -14,6 +16,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const tokenContent = getSession();
+
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -33,22 +37,26 @@ export default function RootLayout({
                   Home
                 </a>
               </li>
-              <li className="mr-4">
-                <a
-                  href="/profile"
-                  className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
-                >
-                  Profile
-                </a>
-              </li>
-              <li className="mr-4">
-                <a
-                  href="/upload"
-                  className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
-                >
-                  Upload
-                </a>
-              </li>
+              {tokenContent && (
+                <>
+                  <li className="mr-4">
+                    <a
+                      href="/profile"
+                      className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+                    >
+                      Profile
+                    </a>
+                  </li>
+                  <li className="mr-4">
+                    <a
+                      href="/upload"
+                      className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+                    >
+                      Upload
+                    </a>
+                  </li>
+                </>
+              )}
               <li className="mr-4">
                 <a
                   href="/login"
