@@ -1,4 +1,6 @@
-import { SignJWT, jwtVerify } from 'jose';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import { getUserByUsername } from '@/models/userModel';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -23,7 +25,22 @@ export async function decrypt(input: string): Promise<any> {
 export async function login(formData: FormData) {
   // Verify credentials && get the user
 
-  const user = { email: formData.get('email'), name: 'John' };
+  const user = await getUserByUsername(formData.get('username') as string);
+
+  if (!user) {
+    throw new Error('Incorrect username/password');
+  }
+
+  if (
+    user.password &&
+    !bcrypt.compareSync(formData.get('password') as string, user.password)
+  ) {
+    throw new Error('Incorrect username/password');
+  }
+
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT secret not set');
+  }
 
   // Create the session
   const expires = new Date(Date.now() + 10 * 1000);
