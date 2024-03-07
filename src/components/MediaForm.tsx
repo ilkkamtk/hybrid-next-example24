@@ -1,6 +1,7 @@
 'use client';
 import { fetchData } from '@/lib/functions';
-import { MediaResponse } from '@sharedTypes/MessageTypes';
+import { MediaItem } from '@sharedTypes/DBTypes';
+import { MediaResponse, MessageResponse } from '@sharedTypes/MessageTypes';
 import { useRouter } from 'next/navigation';
 
 const MediaForm = () => {
@@ -18,9 +19,28 @@ const MediaForm = () => {
         body: formData,
       });
       // TODO: if result OK, redirect to the home page to see the uploaded media
-      if (uploadResult) {
-        router.push('/');
+      if (!uploadResult) {
+        throw new Error('Error uploading media');
       }
+
+      const tagData = {
+        media_id: (uploadResult.media as MediaItem).media_id,
+        tag_name: formData.get('tag') as string,
+      };
+
+      const tagResult = await fetchData<MessageResponse>('/api/tags', {
+        method: 'POST',
+        body: JSON.stringify(tagData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!tagResult) {
+        throw new Error('Error adding tag to database');
+      }
+
+      router.push('/');
     } catch (error) {
       console.error(error);
     }
@@ -53,6 +73,20 @@ const MediaForm = () => {
             type="text"
             name="description"
             id="description"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="tag"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Tag
+          </label>
+          <input
+            type="text"
+            name="tag"
+            id="tag"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>

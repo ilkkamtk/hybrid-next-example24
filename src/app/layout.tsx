@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { TokenContent } from '@sharedTypes/DBTypes';
 import { getSession } from '@/lib/authActions';
+import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,40 +31,40 @@ export default function RootLayout({
           <div className="lg:flex lg:items-center lg:w-auto justify-end">
             <ul className="flex">
               <li className="mr-4">
-                <a
+                <Link
                   href="/"
                   className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
                 >
                   Home
-                </a>
+                </Link>
               </li>
               {tokenContent && (
                 <>
                   <li className="mr-4">
-                    <a
+                    <Link
                       href="/profile"
                       className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
                     >
                       Profile
-                    </a>
+                    </Link>
                   </li>
                   <li className="mr-4">
-                    <a
+                    <Link
                       href="/upload"
                       className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
                     >
                       Upload
-                    </a>
+                    </Link>
                   </li>
                 </>
               )}
               <li className="mr-4">
-                <a
+                <Link
                   href="/login"
                   className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
                 >
                   Login
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
