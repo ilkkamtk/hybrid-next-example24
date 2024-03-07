@@ -1,5 +1,5 @@
 import { requireAuth } from '@/lib/authActions';
-import { postTag } from '@/models/tagModel';
+import { fetchAllTags, postTag } from '@/models/tagModel';
 import { MediaItemTag } from '@sharedTypes/DBTypes';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -26,4 +26,14 @@ export async function POST(request: NextRequest) {
 
     return new NextResponse(JSON.stringify(postResult), { status: 200 });
   } catch (error) {}
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const tagData = await fetchAllTags();
+    return new NextResponse(JSON.stringify(tagData), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new NextResponse('Error fetching tags', { status: 500 });
+  }
 }

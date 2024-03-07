@@ -1,11 +1,21 @@
 'use client';
 import { fetchData } from '@/lib/functions';
-import { MediaItem } from '@sharedTypes/DBTypes';
+import { MediaItem, Tag } from '@sharedTypes/DBTypes';
 import { MediaResponse, MessageResponse } from '@sharedTypes/MessageTypes';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const MediaForm = () => {
+  const [tags, setTags] = useState<Tag[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      const tagResult = await fetchData<Tag[]>('/api/tags');
+      setTags(tagResult || []);
+    };
+    fetchTags();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -84,11 +94,17 @@ const MediaForm = () => {
             Tag
           </label>
           <input
+            list="tags"
             type="text"
             name="tag"
             id="tag"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+          <datalist id="tags">
+            {tags.map((tag, index) => (
+              <option key={index} value={tag.tag_name} />
+            ))}
+          </datalist>
         </div>
         <div className="mb-4">
           <label
